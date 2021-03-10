@@ -13,17 +13,22 @@ import Utils as ut
 #"lpgList" : []  # row12
 #}
 
+
 bevList = []  # row6
 h2List = []  # row7
-phevList = []  # row8
+phevList = [] # row8
 ottoHybList = []  # row10
 dieselHybList = []  # row11
 lpgList = []  # row12
+
+
 
 class myBackend():
     def __init__(self):
         self.tempTitles = []
         self.fileVar = tk.StringVar()
+        #self.testList = []
+        self.testDict = {}
         #self.tspan= ut.createTimeSpan(2016,2021)
 
     def getFile(self):
@@ -51,6 +56,7 @@ class myBackend():
         return ut.createTimeSpan(2016,2021)
 
     def gatherRows(self):
+        print("Hier kommen die Reihen")
         with open("tempfile.csv", "r") as csv_file:  # Hier bekommen wir die Werte für die Y Achse
             csv_reader = csv.reader(csv_file, delimiter=";")
             for row in reversed(list(csv_reader)):
@@ -60,6 +66,22 @@ class myBackend():
                 ottoHybList.append(int(row[10]))
                 dieselHybList.append(int(row[11]))
                 lpgList.append(int(row[12]))
-        print(f"das ist die Liste:  {bevList}")
 
+                #self.testList.append(bevList)
+                #self.testList.append(h2List)
+                #self.testList.append(phevList)
+                #self.testList.append(ottoHybList)
+                #self.testList.append(dieselHybList)
+                #self.testList.append(lpgList)
+
+                self.testDict["BEV"] = bevList
+                self.testDict["H2"] = h2List
+                self.testDict["PHEV"] = phevList
+                self.testDict["BenzinHybrid"] = ottoHybList
+                self.testDict["DieselHybrid"] = dieselHybList
+                self.testDict["LPG"] = lpgList
+        print(self.testDict)
+
+    def getDictEntry(self, name):
+        return self.testDict[name]
 

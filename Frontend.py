@@ -5,12 +5,11 @@ from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
 import matplotlib.pyplot as plt
 
-
-
+Cboxes = {}
 class Plotall:
+
     def __init__(self, root, size, be):
         self.be = be
-        self.Cboxes = []
         mainframe = tk.Frame(root)
         mainframe.grid(row=1, rowspan=8, column=0)
         self.buttonframe = tk.Frame(root)
@@ -26,10 +25,6 @@ class Plotall:
         self.checkboxframe = tk.Frame(mainframe)
         self.checkboxframe.grid(row=1, column= 0, sticky=tk.W)
 
-       #self.toolbar = NavigationToolbar2Tk(self.canvas, self.checkboxframe, pack_toolbar=False)
-       ##        print(dir(self.toolbar))
-       #self.toolbar.update()
-       #self.toolbar.grid(column=0, row=1, sticky=tk.E)
         self.createWidgets(root)
 
     def createWidgets(self, root):
@@ -39,59 +34,48 @@ class Plotall:
         b1 = tk.Button(self.buttonframe, text="Select",command=self.be.getFile)
         b1.grid(row=0, column=1, sticky=tk.N + tk.S + tk.E + tk.W)
 
-        #b2 = tk.Button(self.buttonframe, text="BEVs Zeigen", command=self.be.requestRow)  #
-        #b2.grid(row=0, column=2, sticky=tk.N + tk.S + tk.E + tk.W)
-
-        #b3 = tk.Button(self.buttonframe, text="Clear", command=self.clear, activeforeground="red")
-        #b3.grid(row=0, column=3, sticky=tk.N + tk.S + tk.E + tk.W)
-
         b4 = tk.Button(self.buttonframe, text="Close", command=root.destroy)
         b4.grid(row=0, column=4, sticky=tk.N + tk.S + tk.E + tk.W)
 
-        var1 = 1
-        var2 = 2
-        var3 = 3
-        var4 = 4
-        var5 = 5
-        var6 = 6
+        allEntries = ["BEV", "H2", "PHEV", "BenzinHybrid", "DieselHybrid","LPG"]
+        for j in allEntries:
+            Cboxes[j] = tk.IntVar(0)
+
+        tk.Checkbutton(self.checkboxframe, text="BEV", variable=Cboxes[allEntries[0]]).grid(row=0, column=0, sticky=tk.W) #variable=var1 ist auch möglich im ersten ()
+        tk.Checkbutton(self.checkboxframe, text="H2", variable=Cboxes[allEntries[1]]).grid(row=1,column=0, sticky=tk.W)
+        tk.Checkbutton(self.checkboxframe, text="PHEV", variable=Cboxes[allEntries[2]]).grid(row=0,column=1, sticky=tk.W)
+        tk.Checkbutton(self.checkboxframe, text="Benzin Hybrid", variable=Cboxes[allEntries[3]]).grid(row=1,column=1, sticky=tk.W)
+        tk.Checkbutton(self.checkboxframe, text="Diesel Hybrid", variable=Cboxes[allEntries[4]]).grid(row=0,column=2, sticky=tk.W)
+        tk.Checkbutton(self.checkboxframe, text="LPG", variable=Cboxes[allEntries[5]]).grid(row=1,column=2, sticky=tk.W)
+        tk.Button(self.checkboxframe, text='Show', command=self.aquireCheckboxes).grid(row=4, sticky=tk.W, pady=4)
 
 
-
-        ch1 = tk.Checkbutton(self.checkboxframe, text="BEV", variable=var1).grid(row=0, column=0, sticky=tk.W) #variable=var1 ist auch möglich im ersten ()
-        ch2 = tk.Checkbutton(self.checkboxframe, text="H2", variable=var2).grid(row=1,column=0, sticky=tk.W)
-        ch3 = tk.Checkbutton(self.checkboxframe, text="PHEV", variable=var3).grid(row=0,column=1, sticky=tk.W)
-        ch4 = tk.Checkbutton(self.checkboxframe, text="Benzin Hybrid", variable=var4).grid(row=1,column=1, sticky=tk.W)
-        ch5 = tk.Checkbutton(self.checkboxframe, text="Diesel Hybrid", variable=var5).grid(row=0,column=2, sticky=tk.W)
-        ch6 = tk.Checkbutton(self.checkboxframe, text="LPG", variable=var6).grid(row=1,column=2, sticky=tk.W)
-        showbutton = tk.Button(self.checkboxframe, text='Show', command=self.aquireCheckboxes).grid(row=4, sticky=tk.W, pady=4)
-
-        self.Cboxes.append(ch1)
-        self.Cboxes.append(ch2)
-        self.Cboxes.append(ch3)
-        self.Cboxes.append(ch4)
-        self.Cboxes.append(ch5)
-        self.Cboxes.append(ch6)
 
     def clear(self):
         self.clearplot()
 
     def aquireCheckboxes(self):
-        for c in self.Cboxes:
-            print(c.state())
-
-    ### DAS DARF NICHT SO PASSIEREN
-    def plotFigure(self,selectedList, styling):
+        self.axes.cla()
         tspan = self.be.getTspan()
 
-        plt.figure(figsize=(15, 5))
-        plt.title("Auswahl")
 
-        if styling:
-            self.useStyle()
+        #yAxis = self.be.getDictEntry("BEV")
+        #self.axes.plot(tspan,yAxis)
+        #self.canvas.draw()
 
-        plt.xticks(rotation=90, size=8)
-        plt.plot(tspan, selectedList)
-        plt.show()
+        for i,j in Cboxes.items():
+            if Cboxes[i].get() == 1:
+                self.axes.plot(tspan, self.be.getDictEntry(i))
+        self.canvas.draw()
+
+        #self.figure.draw()
+
+
+        #self.useStyle()
+
+        #plt.xticks(rotation=90, size=8)
+        #plt.show()
+
 
 
     def useStyle(self):
