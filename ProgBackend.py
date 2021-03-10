@@ -14,6 +14,7 @@ ottoHybList = []
 dieselHybList = []
 lpgList = []
 
+
 class myBackend():
     def __init__(self):
         self.fileVar = tk.StringVar()
@@ -29,7 +30,6 @@ class myBackend():
         if s_ext[1] == ".csv":
             self.fileVar.set(f)
             self.prepareFiles()
-            self.gatherRows()
         else:
             messagebox.showerror("Wrong input file detected!", "Please select a valid .csv file")
 
@@ -43,16 +43,14 @@ class myBackend():
                     i = i.strip().replace(",", ".") + "\n"
                     t.write(i)
 
-    # Hier greift das Backend auf die Utility Hilfsklasse zu und erhält die Timespan für die X Achse
-    def getTspan(self):
-        return ut.createTimeSpan(2016, 2021)
+        self.gatherRows()
 
     # Hier wird die neu erstellte temporäre .csv Datei ausgelesen
     def gatherRows(self):
         with open("tempfile.csv", "r") as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=";")
 
-            # Hier bekommen wir die Werte für die Y Achse
+            # Hier werden die Werte für die Y Achse erzeugt
             for row in reversed(list(csv_reader)):
                 bevList.append(int(row[6]))
                 h2List.append(int(row[7]))
@@ -72,3 +70,7 @@ class myBackend():
     # Das Backend kann auf diese Methode zugreifen und sich die entsprechenden Werte für die Y Achse auslesen
     def getDictEntry(self, name):
         return self.servingDict[name]
+
+    # Hier greift das Backend auf die Utility Hilfsklasse zu und erhält die Timespan für die X Achse
+    def getTspan(self):
+        return ut.createTimeSpan(2016, 2021)

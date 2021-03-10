@@ -72,7 +72,6 @@ class Plotall:
         tk.Button(self.checkboxframe, text='Auswahl anzeigen', command=self.aquireCheckboxes).grid(row=4, sticky=tk.W,
                                                                                                    pady=4)
 
-
     def aquireCheckboxes(self):
         # Bei jedem Aufruf der Methode wird die Figure gecleared.
         self.axes.cla()

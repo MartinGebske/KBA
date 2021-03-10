@@ -1,6 +1,7 @@
 import datetime as dt
 from dateutil.rrule import rrule, MONTHLY
 
+
 ## Hier findet man Hilfsklassen und gekapselte Snippets
 
 def createTimeSpan(s, e):

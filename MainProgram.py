@@ -2,7 +2,6 @@ import tkinter as tk
 import ProgBackend as bend
 import Frontend as fend
 
-
 ## Programmstart
 
 # Hier wird das tkinter Root definiert
