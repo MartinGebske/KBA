@@ -67,6 +67,9 @@ class myBackend():
                 self.servingDict["DieselHybrid"] = dieselHybList
                 self.servingDict["LPG"] = lpgList
 
+        messagebox.showinfo("Success!", "Your file was imported correctly.")
+
+
     # Das Backend kann auf diese Methode zugreifen und sich die entsprechenden Werte für die Y Achse auslesen
     def getDictEntry(self, name):
         return self.servingDict[name]

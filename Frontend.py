@@ -1,6 +1,8 @@
 import tkinter as tk
+from tkinter import filedialog, messagebox
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 import matplotlib.pyplot as plt
+
 
 Cboxes = {}
 
@@ -69,8 +71,18 @@ class Plotall:
         tk.Checkbutton(self.checkboxframe, text="LPG", variable=Cboxes[allEntries[5]]).grid(row=1, column=2,
                                                                                             sticky=tk.W)
         # Über diesen Button wird das Plotten aufgerufen
-        tk.Button(self.checkboxframe, text='Auswahl anzeigen', command=self.aquireCheckboxes).grid(row=4, sticky=tk.W,
+        tk.Button(self.checkboxframe, text="Auswahl anzeigen", command=self.aquireCheckboxes).grid(row=4, sticky=tk.W,
                                                                                                    pady=4)
+        tk.Button(self.checkboxframe, text="Bereinigen...", command=self.clearFigure).grid(row=4,column=1, sticky=tk.W)
+
+       #tk.Button(self.checkboxframe, text="Bild speichern...", command=)
+
+   # def saveFigure(self):
+   #     img = Image
+
+    def clearFigure(self):
+        self.axes.cla()
+        self.canvas.draw()
 
     def aquireCheckboxes(self):
         # Bei jedem Aufruf der Methode wird die Figure gecleared.
@@ -79,16 +91,20 @@ class Plotall:
 
         # Hier wird über das Cboxes Dictionary iteriert. Wenn eine Checkbox aktiv ist,
         # werden beim Backend die entsprechenden Werte abgefragt.
-        for i, j in Cboxes.items():
-            if Cboxes[i].get() == 1:
-                self.axes.plot(tspan, self.be.getDictEntry(i))
 
-        # Diese Methode war zunächst eine alternative, die über einen bool abgefragt wurde.
-        # Der wesentliche Plot funkioniert auch ohne das Styling.
-        self.useStyle()
+        try:
+            for i, j in Cboxes.items():
+                if Cboxes[i].get() == 1:
+                    self.axes.plot(tspan, self.be.getDictEntry(i), label=i)
 
-        # Das finale Zeichnen des aktualisierten Canvas
-        self.canvas.draw()
+            # Diese Methode war zunächst eine alternative, die über einen bool abgefragt wurde.
+            # Der wesentliche Plot funkioniert (im Grunde) auch ohne das Styling.
+            self.useStyle()
+
+            # Das finale Zeichnen des aktualisierten Canvas
+            self.canvas.draw()
+        except:
+            messagebox.showerror("No input file detected!", "I can't do this. Did you import a valid .csv file or made a proper selection?")
 
     def useStyle(self):
         """[INFO: ] Styling will remove top and right spines
@@ -108,3 +124,6 @@ class Plotall:
         # Greift auf die Benennung xTicks zu und formatiert sie
         self.axes.set_xticks(self.timespan)
         self.axes.set_xticklabels(self.timespan, rotation=90)
+
+        self.axes.set_ylabel("Neuzulassungen")
+        self.axes.legend(loc="upper left")
