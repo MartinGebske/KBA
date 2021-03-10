@@ -4,43 +4,37 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 import Utils as ut
 
-#myLists = {
-#"bevList" : [],  # row6
-#"h2List" : [],  # row7
-#"phevList" : [],  # row8
-#"ottoHybList" : [],  # row10
-#"dieselHybList" : [],  # row11
-#"lpgList" : []  # row12
-#}
+## Hier werden datenrelevante Operationen ausgeführt.
 
-
-bevList = []  # row6
-h2List = []  # row7
-phevList = [] # row8
-ottoHybList = []  # row10
-dieselHybList = []  # row11
-lpgList = []  # row12
-
-
+# Listen für jeden Eintrag
+bevList = []
+h2List = []
+phevList = []
+ottoHybList = []
+dieselHybList = []
+lpgList = []
 
 class myBackend():
     def __init__(self):
-        self.tempTitles = []
         self.fileVar = tk.StringVar()
-        #self.testList = []
-        self.testDict = {}
-        #self.tspan= ut.createTimeSpan(2016,2021)
+        self.servingDict = {}
 
+    # Dialogaufruf für die Auswahl der zu bearbeitenden .csv Datei
     def getFile(self):
+        # Macs unterstützen nahezu keine Dropdownauswahl, weshalb hier auf das Selection Tupel verzichtet wurde
         f = filedialog.askopenfilename(title="Please select a valid .csv file")
+
+        # Hier wird kontrolliert, ob die Dateiendung wirklich korrekt ist
         s_ext = os.path.splitext(f)
         if s_ext[1] == ".csv":
             self.fileVar.set(f)
             self.prepareFiles()
             self.gatherRows()
         else:
-            messagebox.showerror("Program error!", "No valid file format found!")
+            messagebox.showerror("Wrong input file detected!", "Please select a valid .csv file")
 
+    # Die gewählte Datei (des Kraftfahrbundesamts) muss noch weiter formatiert werden. Daher wird sie hier in eine
+    # temporäre Datei geschrieben und bearbeitet.
     def prepareFiles(self):
         with open("tempfile.csv", "w") as t:
             with open(self.fileVar.get(), "r") as csv_file:
@@ -48,17 +42,17 @@ class myBackend():
                 for i in csv_file:
                     i = i.strip().replace(",", ".") + "\n"
                     t.write(i)
-            for i in header:
-                self.tempTitles.append(i)
-            #print(self.tempTitles)
 
+    # Hier greift das Backend auf die Utility Hilfsklasse zu und erhält die Timespan für die X Achse
     def getTspan(self):
-        return ut.createTimeSpan(2016,2021)
+        return ut.createTimeSpan(2016, 2021)
 
+    # Hier wird die neu erstellte temporäre .csv Datei ausgelesen
     def gatherRows(self):
-        print("Hier kommen die Reihen")
-        with open("tempfile.csv", "r") as csv_file:  # Hier bekommen wir die Werte für die Y Achse
+        with open("tempfile.csv", "r") as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=";")
+
+            # Hier bekommen wir die Werte für die Y Achse
             for row in reversed(list(csv_reader)):
                 bevList.append(int(row[6]))
                 h2List.append(int(row[7]))
@@ -67,21 +61,14 @@ class myBackend():
                 dieselHybList.append(int(row[11]))
                 lpgList.append(int(row[12]))
 
-                #self.testList.append(bevList)
-                #self.testList.append(h2List)
-                #self.testList.append(phevList)
-                #self.testList.append(ottoHybList)
-                #self.testList.append(dieselHybList)
-                #self.testList.append(lpgList)
+                # Mit diesen Daten wird nun das Dictionary befüllt, was zur Kommunikation mit dem Frontend dient
+                self.servingDict["BEV"] = bevList
+                self.servingDict["H2"] = h2List
+                self.servingDict["PHEV"] = phevList
+                self.servingDict["BenzinHybrid"] = ottoHybList
+                self.servingDict["DieselHybrid"] = dieselHybList
+                self.servingDict["LPG"] = lpgList
 
-                self.testDict["BEV"] = bevList
-                self.testDict["H2"] = h2List
-                self.testDict["PHEV"] = phevList
-                self.testDict["BenzinHybrid"] = ottoHybList
-                self.testDict["DieselHybrid"] = dieselHybList
-                self.testDict["LPG"] = lpgList
-        print(self.testDict)
-
+    # Das Backend kann auf diese Methode zugreifen und sich die entsprechenden Werte für die Y Achse auslesen
     def getDictEntry(self, name):
-        return self.testDict[name]
-
+        return self.servingDict[name]
