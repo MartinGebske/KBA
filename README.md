@@ -3,7 +3,6 @@
 Abschlussprojekt des Kurses <b>"Python"</b>
 
 Autor: Martin Gebske<br>
-Dozent: Dr.Ing. Christoph Feiler<br>
 Version: 1.0<br>
 Python Version: 3.8<br>
 

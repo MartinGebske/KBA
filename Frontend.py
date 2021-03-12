@@ -75,10 +75,6 @@ class Plotall:
                                                                                                    pady=4)
         tk.Button(self.checkboxframe, text="Bereinigen...", command=self.clearFigure).grid(row=4,column=1, sticky=tk.W)
 
-       #tk.Button(self.checkboxframe, text="Bild speichern...", command=)
-
-   # def saveFigure(self):
-   #     img = Image
 
     def clearFigure(self):
         self.axes.cla()
